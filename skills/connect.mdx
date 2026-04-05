@@ -1,0 +1,48 @@
+---
+title: "Connect"
+description: "Find unexpected connections between two different domains in your vault."
+---
+
+`/connect` bridges two areas of your vault that normally live in separate silos. It reads across both domains, identifies shared principles and patterns, and surfaces non-obvious links that you can explore or capture as new thinking notes.
+
+## Usage
+
+```text
+/connect [domain1] [domain2]
+```
+
+**Example:** `/connect leadership systems-thinking`
+
+## What it does
+
+<Steps>
+  <Step title="Scan both domains">
+    Claude finds all vault files related to each domain — notes, daily reflections, research, and context files that touch on either topic.
+  </Step>
+  <Step title="Find bridges">
+    Claude identifies shared themes, patterns, or tensions between the two domains. These are the places where the same underlying principle appears in different forms.
+  </Step>
+  <Step title="Generate novel connections">
+    Claude proposes non-obvious links based on evidence from your vault — connections you wouldn't have found by reading either domain in isolation.
+  </Step>
+  <Step title="Suggest actions">
+    Claude closes with concrete suggestions: notes to write, experiments to run, or further connections to explore.
+  </Step>
+</Steps>
+
+The full analysis is saved to `thinking/agent-output/` as `YYYY-MM-DD-connect-[domain1]-[domain2].md`.
+
+## Related skills
+
+These skills work well alongside `/connect` for deeper exploration:
+
+| Skill | What it does |
+|---|---|
+| `/trace` | Track how a single idea evolved over time across your vault |
+| `/drift` | Compare your stated intentions against your actual behavior patterns |
+| `/ideas-gen` | Generate new ideas by scanning across all vault domains for cross-domain patterns |
+| `/graduate` | Promote ideas from daily notes to standalone files in `thinking/` |
+
+<Tip>
+  Use `/connect` when you sense there's something interesting between two areas but can't quite articulate it. The domains don't need to be obvious candidates — the less obvious the pairing, the more surprising the connections tend to be.
+</Tip>

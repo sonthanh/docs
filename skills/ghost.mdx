@@ -1,0 +1,41 @@
+---
+title: "Ghost"
+description: "Answer a question in your voice, grounded entirely in your vault history — not generic AI knowledge."
+---
+
+`/ghost` answers a question the way you would. It reads your vault to understand your actual views, writing patterns, and reasoning style, then produces a response that sounds like you — not like a generic AI answer.
+
+## Usage
+
+```text
+/ghost [question]
+```
+
+**Example:** `/ghost What do I think about delegation?`
+
+## What it does
+
+<Steps>
+  <Step title="Build a voice profile">
+    Claude reads `context/about-me.md`, `context/preferences.md`, recent daily notes, and `thinking/reflections/` to understand how you think and communicate.
+  </Step>
+  <Step title="Scan for your actual views">
+    Claude scans vault files relevant to the question — looking for your stated opinions, decisions you've made, and patterns in how you've approached this topic.
+  </Step>
+  <Step title="Write the answer in your voice">
+    Claude drafts a response that matches your tone, vocabulary, reasoning style, and values — grounding every statement in your actual writing.
+  </Step>
+  <Step title="Evaluate and flag gaps">
+    Claude rates how confident it is (1–10) that the answer reflects how you'd actually respond, and flags any areas where the vault didn't have enough data and it had to guess.
+  </Step>
+</Steps>
+
+## When to use it
+
+- **Drafting content** that needs to sound like you — posts, talks, writing where your voice matters
+- **Exploring your views** on a topic before you sit down to write about it yourself
+- **Checking consistency** between what you believe and what you've actually written across your vault
+
+<Note>
+  `/ghost` answers only from your vault content. It will not invent views you haven't expressed. If your vault lacks data on a topic, Claude will flag that gap rather than fill it with generic reasoning.
+</Note>

@@ -1,0 +1,95 @@
+---
+title: "Absorb"
+description: "Cross-reference book insights against your actual vault context and propose targeted updates to your strategy, goals, and thinking."
+---
+
+`/absorb` reads your ingested book notes, cross-references the insights against your existing vault context (strategy, goals, business), and proposes concrete updates. It never writes anything without your approval — unless the book has already been audited, in which case it can apply changes automatically.
+
+## Usage
+
+```bash
+# Deep dive on a single book
+/absorb [book-name]
+
+# Cross-book synthesis across your last 5–10 books
+/absorb
+```
+
+## Pre-Absorb Check
+
+Before doing anything, `/absorb` checks the audit flag for the book:
+
+| Audit Flag | What Happens |
+|------------|-------------|
+| `true` | Runs autonomously — no approval needed |
+| `manual` | Shows each proposal and asks: "Approve? (all / pick numbers / skip)" |
+| `false` | Blocked — "Run /audit first before absorbing." |
+
+## Single Book Output
+
+When you run `/absorb [book-name]`, it generates an Absorption Report with three sections:
+
+```
+## Absorption Report: [Book Title]
+
+### For Your Business
+| Insight | Applies to | Suggested Action |
+|---------|-----------|-----------------|
+| [Insight] | [[context/strategy]] | [What to do] |
+| [Insight] | [[context/icp]] | [What to do] |
+
+### For You Personally
+- [How this changes your thinking or habits]
+
+### Thinking Seeds
+- **New idea**: [Idea name] — [Brief description]
+  → Create in thinking/ideas/? [y/n]
+- **Reinforces**: [[thinking/ideas/existing-idea]] — [How]
+- **Challenges**: [[thinking/patterns/existing-pattern]] — [How]
+
+### Vault Updates Proposed
+1. Add to context/strategy.md: [what]
+2. Create thinking/ideas/[new-idea].md
+3. Update context/preferences.md: [new rule from book]
+
+Approve updates? (all / pick numbers / skip)
+```
+
+<AccordionGroup>
+  <Accordion title="Business Applications">
+    Compares book insights against `{vault}/context/strategy.md`, `{vault}/context/icp.md`, and `{vault}/context/brand.md`. Surfaces what should change in your strategy and any implications for how you position or serve your audience.
+  </Accordion>
+  <Accordion title="Personal Applications">
+    Identifies habits, mindsets, and practices the book suggests adopting, cross-referenced against your `{vault}/context/goals.md`.
+  </Accordion>
+  <Accordion title="Thinking Seeds">
+    Finds new ideas to create, existing ideas in `{vault}/thinking/ideas/` to reinforce, and patterns in `{vault}/thinking/patterns/` to challenge or update.
+  </Accordion>
+</AccordionGroup>
+
+## Vault Updates
+
+`/absorb` always shows you what it plans to change before touching anything. It will never create orphan notes — every proposal connects to existing vault content. Once you approve (with `all`, specific numbers, or `skip`), it applies only the updates you confirmed.
+
+<Note>
+  `/absorb` never writes to your vault without your explicit approval — unless the book's audit flag is `true`, in which case you've already verified the knowledge and the skill applies changes automatically.
+</Note>
+
+## Cross-Book Synthesis
+
+Running `/absorb` without an argument reads your last 5–10 book notes and produces a synthesis report:
+
+- **Common threads** — themes that appear across multiple books
+- **Contradictions** — places where authors disagree
+- **Strongest actionable insights** — backed by multiple sources
+- **Suggested pattern entries** for `{vault}/thinking/patterns/`
+
+The synthesis report is saved to:
+
+```
+{vault}/thinking/agent-output/YYYY-MM-DD-absorption-synthesis.md
+```
+
+<Tip>
+  Run `/chain` to automate the full pipeline including absorb. When triggered via `/chain`, the audit flag is already `true`, so absorb applies vault updates automatically without prompting.
+</Tip>

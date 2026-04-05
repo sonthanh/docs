@@ -1,0 +1,88 @@
+---
+title: "Chain"
+description: "Orchestrate the complete knowledge pipeline — self-learn, ingest, audit, absorb, and sync — in a single automated command."
+---
+
+`/chain` runs every step of the Brain OS knowledge pipeline in sequence, from raw epub to a committed, synced vault. Use it when you want to process a new book end-to-end without manually triggering each skill.
+
+<Warning>
+  Each step must complete successfully before the next one starts. Do **not** skip steps — the pipeline is designed so each step depends on the output of the previous one.
+</Warning>
+
+## Usage
+
+```bash
+# Full pipeline for a new book
+/chain <epub_path> --notebook-id <nlm_id>
+
+# Resume a pipeline that was interrupted
+/chain --resume
+
+# Show pipeline status for all books
+/chain --status
+```
+
+## Pipeline Steps
+
+<Steps>
+  <Step title="/self-learn — Extract, validate, extend">
+    Runs all three phases autonomously:
+    - **Phase 1 (Extract)**: Parses the epub and writes atomic concept notes to `knowledge/raw/`
+    - **Phase 2 (Validate)**: Runs the 4-role autoresearch loop against NotebookLM, repeating until 100% of questions pass at ≥95
+    - **Phase 3 (Extend)**: Writes synthesis, applied domain, and research extension notes
+
+    Phase 2 has no timeout — it loops until mastery is achieved.
+  </Step>
+  <Step title="/ingest — Raw notes to structured book note">
+    Converts the raw extracted notes into a single structured book note at `{vault}/knowledge/books/[book-slug].md` using the Book Note Template, then updates the books index.
+  </Step>
+  <Step title="/audit — 50 fresh questions vs NotebookLM">
+    Runs an independent verification pass with 50 new questions (25 topic, 15 cross-cutting, 10 adversarial). If 100% pass at ≥95, the audit flag is set to `true`. If any fail, the pipeline stops and a task is written to your inbox.
+  </Step>
+  <Step title="/absorb — Connect insights to your vault">
+    Because the audit flag is already `true`, `/absorb` bypasses the approval prompt and applies vault connections automatically — updating your strategy, goals, and thinking notes based on the book's insights.
+  </Step>
+  <Step title="/sync — Commit and push">
+    Commits all vault changes and pushes to your configured git remote.
+  </Step>
+  <Step title="Notify — Inbox, daily note, flag timestamp">
+    Updates all 3 notification channels:
+    - Adds a review task to `business/tasks/inbox.md`
+    - Creates or updates the daily note with a pipeline completion log
+    - Writes a `pipeline_completed` timestamp to the audit flag file
+  </Step>
+</Steps>
+
+## Pipeline State
+
+Each book's pipeline state is tracked in `_validation/audit-flag.json`:
+
+```json
+{
+  "flag": "true|false|manual",
+  "last_audit": "ISO timestamp",
+  "audit_score": "159/159 at >=95",
+  "pipeline_completed": "ISO timestamp",
+  "ingested": true,
+  "absorbed": true
+}
+```
+
+`/chain --resume` reads this file to determine which step to continue from after an interruption.
+
+## Error Handling
+
+<AccordionGroup>
+  <Accordion title="Phase 2 fails (< 100% pass rate)">
+    The validation loop continues indefinitely — there is no timeout. It generates new questions targeting weak topics and keeps iterating until every question passes at ≥95. The pipeline only proceeds to `/ingest` once 100% pass rate is achieved.
+  </Accordion>
+  <Accordion title="Audit fails">
+    The pipeline stops immediately. The audit flag stays `false`. A task is written to `business/tasks/inbox.md` with details about which questions failed. Run `/audit` manually after reviewing and correcting your notes, then use `/chain --resume` to continue.
+  </Accordion>
+  <Accordion title="Git push fails">
+    Pull the latest changes first to reconcile any remote updates, resolve any conflicts, then retry the push. `/chain --resume` will restart from the sync step.
+  </Accordion>
+  <Accordion title="NotebookLM timeout">
+    The skill retries 3 times with exponential backoff. If all 3 retries fail, the pipeline pauses and notifies you to check your NotebookLM connection before resuming.
+  </Accordion>
+</AccordionGroup>

@@ -1,0 +1,130 @@
+---
+title: 'Configuration'
+description: 'Configure Brain OS settings, installation modes, and manage your installation.'
+---
+
+## Vault path
+
+The only required configuration is your vault path. After installing Brain OS, open `~/.brain-os/brain-os.config.md` and set `vault_path` to your Obsidian vault location:
+
+```markdown
+vault_path: /path/to/your/obsidian/vault
+```
+
+Every skill reads this file to locate your vault. Without it, no skills will work.
+
+## Installation modes
+
+<AccordionGroup>
+  <Accordion title="One-line installer (recommended)">
+    The default install clones Brain OS to `~/.brain-os` and symlinks all 25 skills into `~/.claude/skills/`:
+
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/sonthanh/brain-os-plugin/main/skills.sh | bash
+    ```
+
+    After install, set your vault path in `~/.brain-os/brain-os.config.md`.
+  </Accordion>
+
+  <Accordion title="Selective install">
+    Install only the skills you need by passing skill names to the installer:
+
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/sonthanh/brain-os-plugin/main/skills.sh | bash -s self-learn audit today
+    ```
+
+    You can install any combination of the 25 available skills.
+  </Accordion>
+
+  <Accordion title="Plugin mode (local development)">
+    If you have cloned the repository locally, you can run Brain OS as a Claude Code plugin directly:
+
+    ```bash
+    cc --plugin-dir ~/brain-os-plugin
+    ```
+
+    This loads skills from your local clone without symlinking them.
+  </Accordion>
+
+  <Accordion title="Marketplace">
+    Install through the Claude Code marketplace:
+
+    ```bash
+    /plugin marketplace add sonthanh/brain-os-marketplace
+    /plugin install brain-os@brain-os-marketplace
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Updating Brain OS
+
+<Tabs>
+  <Tab title="Via Claude Code">
+    ```bash
+    /plugin update brain-os
+    ```
+  </Tab>
+  <Tab title="Manual git pull">
+    ```bash
+    cd ~/.brain-os && git pull
+    ```
+  </Tab>
+</Tabs>
+
+## Uninstalling
+
+To remove all Brain OS skill symlinks from `~/.claude/skills/`:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/sonthanh/brain-os-plugin/main/skills.sh | bash -s -- --uninstall
+```
+
+If you installed locally, you can also run:
+
+```bash
+./install.sh --uninstall
+```
+
+<Note>
+  Uninstalling removes the symlinks only. Your vault and its contents are never modified.
+</Note>
+
+## Available skills
+
+To see all 25 skills and which ones are currently installed, run:
+
+<Tabs>
+  <Tab title="Remote">
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/sonthanh/brain-os-plugin/main/skills.sh | bash -s -- --list
+    ```
+  </Tab>
+  <Tab title="Local install">
+    ```bash
+    ./install.sh --list
+    ```
+  </Tab>
+</Tabs>
+
+Installed skills are marked with `*` in the output.
+
+## Expected vault structure
+
+Brain OS expects your Obsidian vault to follow this layout:
+
+```
+your-vault/
+├── context/          # Who you are, business, goals, ICP, brand
+├── business/         # Projects, tasks, intelligence, departments
+├── personal/         # Research, people, resources, inbox
+├── thinking/         # Ideas, patterns, reflections, connections
+├── knowledge/        # Books, articles, raw input
+│   ├── raw/          # Unprocessed book extractions
+│   └── books/        # Structured book notes
+├── daily/            # Daily notes, handovers
+└── private/          # Git-ignored confidential data
+```
+
+<Tip>
+  If your vault uses a different structure, daily operations and thinking skills will still work. The structure matters most for the knowledge pipeline skills (`/self-learn`, `/ingest`, `/absorb`).
+</Tip>

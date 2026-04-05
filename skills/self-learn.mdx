@@ -1,0 +1,132 @@
+---
+title: "Self-Learn"
+description: "Autonomously master a book through a 3-phase pipeline: extract atomic concepts, validate against NotebookLM, and extend into new domains."
+---
+
+`/self-learn` runs a fully autonomous 3-phase pipeline that reads an epub, extracts atomic knowledge into your Obsidian vault, validates that knowledge against NotebookLM until 100% mastery, then extends it into synthesis and applied research. All knowledge lives in Obsidian — never inside the skill itself.
+
+## Usage
+
+```bash
+# Full autonomous run
+/self-learn --book <epub_path> --notebook-id <nlm_id>
+
+# Run a specific phase only
+/self-learn --phase extract --book <epub_path>
+/self-learn --phase validate --notebook-id <nlm_id>
+/self-learn --phase extend
+```
+
+## How It Works
+
+<Steps>
+  <Step title="Phase 1: Extract">
+    `/self-learn` parses the epub chapter by chapter. For each chapter it identifies atomic concepts — named frameworks, core principles, step-by-step processes, mental models, key distinctions, and actionable tools — then writes one Obsidian note per concept (~100 words).
+
+    Concepts are organized into topic folders and linked to related concepts from earlier chapters. After all chapters are processed, the skill reports the total number of topics extracted and their category breakdown.
+  </Step>
+  <Step title="Phase 2: Validate">
+    This phase runs an autoresearch loop using 4 independent roles with strict information barriers:
+
+    | Role | Responsibility |
+    |------|---------------|
+    | **Question Generator** | Creates questions without seeing any answers |
+    | **Knowledge Agent** | Answers only from your Obsidian notes — never from the book directly |
+    | **Oracle (NotebookLM)** | Answers from the full book via `notebooklm ask` |
+    | **Judge** | Scores answer similarity on a 0–100 scale without knowing which is agent vs oracle |
+
+    The loop generates `max(100, num_topics × 3)` questions — 50% topic-based, 30% blind (from chapter titles), and 20% adversarial. Any question scoring below 95 triggers a targeted update to the relevant Obsidian notes. The loop repeats with fresh questions until **100% of questions pass at ≥95**.
+
+    <Warning>
+      Wrong concepts are treated as catastrophic. The skill prioritizes fixing conceptual errors before filling missing details — a note that says the wrong thing is far worse than a note that's incomplete.
+    </Warning>
+
+    **Example validation log:**
+    ```
+    Round 1: 85/100 passed (85%) — weak: [business-operations, leadership-hats]
+    Round 2: 94/100 passed (94%) — weak: [accountability-structures]
+    Round 3: 100/100 passed (100%) — MASTERY ACHIEVED
+    ```
+  </Step>
+  <Step title="Phase 3: Extend">
+    Once mastery is achieved, `/self-learn` extends the knowledge beyond the source book:
+
+    - **Synthesis** — connects concepts to adjacent thinkers; notes tagged `source: "synthesis"`
+    - **Applied domains** — applies ideas to new contexts; saved in `applied/{domain}/`, tagged `source: "application"`
+    - **Research** — captures current developments related to the book's themes; tagged `source: "research-{date}"`
+
+    Extension notes use the same note template as Phase 1 but with different source tags.
+  </Step>
+</Steps>
+
+After all three phases complete, the pipeline continues autonomously into `/ingest` → `/audit` → `/absorb` → `/sync`.
+
+## Knowledge Output Location
+
+Extracted notes are written to your vault under the book's slug:
+
+```
+{vault}/knowledge/raw/{book-slug}/
+  ├── decision-making/
+  ├── business-operations/
+  ├── leadership/
+  └── [discovered categories]/
+```
+
+## Note Template
+
+Each extracted concept is stored as a standalone Obsidian note:
+
+```markdown
+---
+source: "{book_title}"
+author: "{author}"
+chapter: {chapter_number}
+tags: [{tags}]
+---
+
+# {Concept Title}
+
+{~100 words: concise, crystal clear, key point only}
+
+## Key Insight
+{One sentence takeaway}
+
+## Related
+- [[related-concept-1]]
+- [[related-concept-2]]
+```
+
+## NotebookLM Setup
+
+Before running the validate phase, you need to point the skill at your NotebookLM notebook. Run these two commands to set the active notebook and verify it responds:
+
+```bash
+~/.local/bin/notebooklm use {notebook_id}
+~/.local/bin/notebooklm ask "{question}"
+```
+
+Replace `{notebook_id}` with your NotebookLM notebook ID (passed via `--notebook-id`).
+
+## Checking Status
+
+Always use the `summary.py` script to check phase status — never generate the summary manually:
+
+```bash
+# Full status overview
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/self-learn/scripts/summary.py {vault}/knowledge/raw/[book-slug]
+
+# Phase status only
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/self-learn/scripts/summary.py {vault}/knowledge/raw/[book-slug] --status
+
+# Phase 3 details
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/self-learn/scripts/summary.py {vault}/knowledge/raw/[book-slug] --phase3
+```
+
+<Note>
+  `/self-learn` requires **Python 3.12+** and the `notebooklm-py` package. See the [dependencies page](/dependencies) for installation instructions.
+</Note>
+
+<Tip>
+  Use `/chain` to run the entire pipeline — self-learn through sync — in a single command without manually triggering each phase.
+</Tip>

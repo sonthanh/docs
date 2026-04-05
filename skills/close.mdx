@@ -1,0 +1,45 @@
+---
+title: "Close"
+description: "Run end-of-day processing to wrap up your session, capture decisions, and set up tomorrow."
+---
+
+Type `/close` at the end of your workday to review what happened, extract loose ends, and leave your vault in a clean state for tomorrow.
+
+## Usage
+
+```bash
+/close
+```
+
+## What it does
+
+<Steps>
+  <Step title="Reviews today's daily note">
+    Reads `daily/YYYY-MM-DD.md` and compares what you planned in the morning against what actually happened.
+  </Step>
+  <Step title="Extracts action items">
+    Identifies any unfinished tasks, promises made, or follow-ups that need to carry forward.
+  </Step>
+  <Step title="Surfaces vault connections">
+    Finds links between today's work and existing notes in your vault — connections you might not have noticed in the flow of the day.
+  </Step>
+  <Step title="Logs decisions">
+    Ensures any decisions made during today's sessions are saved to your vault rather than lost in conversation history.
+  </Step>
+  <Step title="Updates the daily note">
+    Writes back to `daily/YYYY-MM-DD.md` with:
+    - Completed items checked off
+    - New action items queued for tomorrow
+    - Key decisions recorded
+  </Step>
+  <Step title="Asks for your reflection">
+    Prompts: "What is one thing you learned or noticed today?" — a lightweight reflection habit that compounds over time.
+  </Step>
+  <Step title="Suggests vault updates">
+    Recommends any context files (strategy, goals, project notes) that should be updated based on what happened today.
+  </Step>
+</Steps>
+
+<Tip>
+  Pair `/today` in the morning with `/close` in the evening for a complete daily workflow. Together they create a consistent rhythm: plan your day, work, then close the loop before you stop.
+</Tip>

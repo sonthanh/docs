@@ -1,0 +1,116 @@
+---
+title: "Ingest"
+description: "Convert raw book notes, highlights, and files into structured, linked vault notes ready for absorption."
+---
+
+`/ingest` takes raw knowledge inputs — book notes, highlights, exported files — from your vault's `knowledge/raw/` folder and converts them into clean, structured notes using a consistent template. It handles books, articles, podcasts, and courses.
+
+## Usage
+
+```bash
+# Process all unprocessed files in knowledge/raw/
+/ingest
+
+# Process a single specific file
+/ingest [filepath]
+```
+
+When run without an argument, `/ingest` scans `{vault}/knowledge/raw/` for any file that doesn't have `processed: true` in its frontmatter, processes each one, then marks it as processed and reports a summary.
+
+## What It Produces
+
+Every book is converted into a structured note using the Book Note Template:
+
+```markdown
+---
+title: "[Book Title]"
+author: "[Author]"
+year: [Year]
+finished: YYYY-MM-DD
+rating: X/10
+tags: [knowledge, book, topic1, topic2]
+zone: knowledge
+status: reading | completed | abandoned
+---
+
+# [Book Title]
+**Author**: [Author]
+**Rating**: X/10
+
+## One-Sentence Summary
+> [The book in one sentence]
+
+## Core Thesis
+[What is the author's main argument? 2-3 sentences max]
+
+## Key Concepts
+
+### 1. [Concept Name]
+[Explanation in my own words. How I understand this.]
+
+### 2. [Concept Name]
+[Explanation]
+
+### 3. [Concept Name]
+[Explanation]
+
+## Frameworks & Mental Models
+- **[Framework name]**: [Brief description + when to use it]
+
+## Actionable Insights
+- [ ] [Something I can apply to my life/business]
+- [ ] [Another actionable takeaway]
+
+## Connections to My Vault
+- Relates to [[context/strategy]] because...
+- Connects to [[thinking/ideas/...]] on...
+- Could inform [[business/...]]
+
+## My Reactions & Thoughts
+> [Personal reactions — what I agree/disagree with, what surprised me]
+
+## Memorable Passages
+> [Short quote or paraphrase, max 15 words] (p. XX)
+
+## Questions This Raises
+- [Question the book made me think about]
+```
+
+## Output Location
+
+The structured note is saved to:
+
+```
+{vault}/knowledge/books/[book-slug].md
+```
+
+After creating the note, `/ingest` also updates `{vault}/knowledge/books/_index.md` with the new book entry and creates wiki-links to related files already in your vault.
+
+## Supported Source Types
+
+<AccordionGroup>
+  <Accordion title="Books">
+    Saved to `{vault}/knowledge/books/[book-slug].md`. Ingestion extracts metadata, key concepts, frameworks, actionable insights, and up to 3–5 memorable quotes (max 15 words each).
+  </Accordion>
+  <Accordion title="Articles">
+    Saved to `{vault}/knowledge/articles/`. Same extraction process, adapted for article-length content.
+  </Accordion>
+  <Accordion title="Podcasts">
+    Saved to `{vault}/knowledge/podcasts/`. Key ideas, guest frameworks, and timestamps are extracted where available.
+  </Accordion>
+  <Accordion title="Courses">
+    Saved to `{vault}/knowledge/courses/`. Module-level concepts and exercises are captured in structured format.
+  </Accordion>
+</AccordionGroup>
+
+## Auto-Chain After Ingestion
+
+After successfully processing a file, `/ingest` automatically triggers the next steps in the pipeline:
+
+1. `/audit` runs on the ingested book to independently verify the knowledge
+2. If audit passes, `/absorb` runs to connect insights to your vault
+3. All 3 notification channels are updated (Obsidian task, daily note, audit flag)
+
+<Tip>
+  Use `/chain` to run the full pipeline from epub to vault sync in one command — no need to trigger each step manually.
+</Tip>

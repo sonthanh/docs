@@ -1,0 +1,62 @@
+---
+title: 'Dependencies'
+description: 'What Brain OS requires to run, and how to set up the optional Python dependencies for book learning.'
+---
+
+## Required for all skills
+
+Every Brain OS skill requires:
+
+- **[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)** — the AI coding environment that runs the skills
+- **An Obsidian vault** — or any markdown-based vault that follows the [expected structure](/configuration#expected-vault-structure)
+
+<Note>
+  Most skills — all daily operations and thinking tools — work with just Claude Code and Obsidian. The Python setup below is only needed if you use `/self-learn`, `/audit`, or `/chain` for book learning.
+</Note>
+
+## Required for self-learn, audit, and chain only
+
+The knowledge pipeline skills (`/self-learn`, `/audit`, `/chain`) require:
+
+- **Python 3.12+**
+- **[notebooklm-py](https://github.com/nicholasgasior/notebooklm-py)** CLI installed at `~/.local/bin/notebooklm`
+- **Python packages:** `ebooklib`, `beautifulsoup4`
+
+<Steps>
+  <Step title="Install notebooklm-py">
+    Follow the setup instructions at [github.com/nicholasgasior/notebooklm-py](https://github.com/nicholasgasior/notebooklm-py). Confirm the CLI is available at `~/.local/bin/notebooklm` after install.
+  </Step>
+  <Step title="Navigate to the scripts directory">
+    ```bash
+    cd ~/.brain-os/skills/self-learn/scripts
+    ```
+  </Step>
+  <Step title="Create a virtual environment">
+    ```bash
+    python3 -m venv .venv
+    ```
+  </Step>
+  <Step title="Activate the virtual environment">
+    ```bash
+    source .venv/bin/activate
+    ```
+  </Step>
+  <Step title="Install the required packages">
+    ```bash
+    pip install ebooklib beautifulsoup4
+    ```
+  </Step>
+</Steps>
+
+## Dependency reference
+
+| Skill | Claude Code | Python + notebooklm |
+|---|---|---|
+| All daily and thinking skills | ✓ | — |
+| /self-learn | ✓ | ✓ |
+| /audit | ✓ | ✓ |
+| /chain | ✓ | ✓ |
+
+<Info>
+  The `ebooklib` package handles epub parsing for book extraction. `beautifulsoup4` processes the HTML content inside epub files. Both are only used by the `/self-learn` pipeline scripts.
+</Info>

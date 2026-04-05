@@ -1,0 +1,53 @@
+---
+title: "Think"
+description: "Switch Claude Code into deep thinking mode — focused on your ideas, patterns, and reflections."
+---
+
+`/think` shifts Claude Code out of operational mode and into a dedicated thinking partner. Instead of referencing business metrics or KPIs, it focuses entirely on your ideas, past reflections, and the patterns forming across your vault.
+
+## Usage
+
+Type `/think` in Claude Code to enter deep thinking mode.
+
+## Pre-think check
+
+Before starting a session, `/think` automatically checks whether any books in your vault have unaudited knowledge. If it finds entries flagged as unaudited, it warns you:
+
+```
+⚠️ Un-audited knowledge: [book] ([flag]). Run /audit to verify, or /audit true to trust.
+```
+
+Run `/audit` to resolve flagged books before diving into a thinking session — unaudited knowledge can skew the connections Claude surfaces.
+
+## What changes in thinking mode
+
+Once active, Claude Code acknowledges the switch and immediately adjusts its behavior:
+
+- **Focus shifts** to `thinking/`, `daily/` (reflections sections), and `context/about-me.md`
+- **Business framing is minimized** — operational context, metrics, and KPIs stay in the background unless you bring them up
+- **Claude asks probing questions** — expect "why" and "what if" prompts rather than answers
+- **Contradictions get surfaced** — if your thinking conflicts with itself, Claude will name it
+- **New angles get suggested** — ideas and framings you haven't considered are actively introduced
+- **Past reflections are referenced** — Claude connects your current thinking to patterns it has seen across your vault
+- **Output goes to `thinking/agent-output/`** by default, unless you direct it elsewhere
+
+## How a session works
+
+<Steps>
+  <Step title="Enter thinking mode">
+    Type `/think`. Claude confirms the mode switch and begins reading your thinking and daily zones.
+  </Step>
+  <Step title="Share what's on your mind">
+    Describe an idea, question, or problem you're turning over. Claude will probe rather than immediately answer.
+  </Step>
+  <Step title="Explore together">
+    Claude surfaces contradictions, connects threads from your past writing, and suggests angles you haven't considered.
+  </Step>
+  <Step title="Review output">
+    Any notes Claude produces are saved to `thinking/agent-output/` unless you specify a different location.
+  </Step>
+</Steps>
+
+<Tip>
+  Pair `/think` with `/emerge` for the deepest sessions. Use `/think` to explore an idea actively, then run `/emerge` to surface what your vault has been implying all along.
+</Tip>

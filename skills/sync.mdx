@@ -1,0 +1,43 @@
+---
+title: "Sync"
+description: "Commit and push all vault changes to your git remote."
+---
+
+`/sync` stages every change in your vault, generates a descriptive commit message grouped by vault zone, and pushes to `origin/main`.
+
+## Usage
+
+```bash
+/sync              # Commit and push all changes
+/sync --status     # Preview what would be committed (no changes made)
+/sync --dry-run    # Preview the commit message before committing
+```
+
+Your vault must be a git repository with a configured remote for `/sync` to work. If you haven't set that up yet, run `git init` in your vault root and add a remote with `git remote add origin <url>`.
+
+<Note>
+  `/sync` is automatically called at the end of the `/chain` pipeline, so your vault is backed up after every full processing run without any extra steps.
+</Note>
+
+## Commit message format
+
+`/sync` generates a structured commit message based on what actually changed, grouping modifications by vault zone:
+
+```
+sync: +12 knowledge notes (the-road-less-stupid), update daily 2026-04-04, add task to inbox
+
+Zones changed:
+- knowledge: absorbed 12 notes from the-road-less-stupid
+- daily: updated 2026-04-04 daily note
+- business: added task to inbox
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+<Tip>
+  Run `/sync` at the end of any session where you've added or modified vault notes. It takes only a few seconds and ensures you never lose work.
+</Tip>
+
+<Warning>
+  If `git push` fails because the remote has changes you don't have locally, `/sync` will ask you to pull first and resolve any conflicts before retrying. It will never force push.
+</Warning>

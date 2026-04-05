@@ -1,0 +1,71 @@
+---
+title: "Quick Start"
+description: "Install Brain OS and run your first skill in under five minutes."
+---
+
+<Note>
+  Brain OS requires [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview). Install and authenticate Claude Code before continuing.
+</Note>
+
+<Steps>
+  <Step title="Install Brain OS">
+    The fastest way to install all 25 skills is the one-line curl installer:
+
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/sonthanh/brain-os-plugin/main/skills.sh | bash
+    ```
+
+    This clones the plugin to `~/.brain-os/` and symlinks all skills to `~/.claude/skills/`.
+
+    <Tip>
+      The Claude Code Marketplace gives you managed installs and one-command updates. Use it if you prefer not to run curl scripts directly:
+
+      ```bash
+      /plugin marketplace add sonthanh/brain-os-marketplace
+      /plugin install brain-os@brain-os-marketplace
+      ```
+    </Tip>
+  </Step>
+
+  <Step title="Set your vault path">
+    Open `~/.brain-os/brain-os.config.md` and set `vault_path` to the location of your Obsidian vault:
+
+    ```yaml
+    vault_path: /path/to/your/obsidian/vault
+    ```
+
+    Every Brain OS skill reads this file to locate your vault. If this is not set correctly, skills will not find your notes.
+
+    See [Vault Setup](/vault-setup) for the expected folder structure inside your vault.
+  </Step>
+
+  <Step title="Run your first skill">
+    Open Claude Code and run:
+
+    ```bash
+    /today
+    ```
+
+    The `today` skill reads your calendar, open tasks, and recent notes to generate a prioritized plan for the day. It's a good first skill because it works immediately with whatever notes you already have.
+  </Step>
+
+  <Step title="Install specific skills only">
+    If you only want a subset of skills, pass them as arguments to the installer:
+
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/sonthanh/brain-os-plugin/main/skills.sh | bash -s self-learn audit today
+    ```
+
+    This installs only `self-learn`, `audit`, and `today` — leaving your `~/.claude/skills/` directory untouched otherwise.
+  </Step>
+
+  <Step title="Uninstall">
+    To remove all Brain OS skills:
+
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/sonthanh/brain-os-plugin/main/skills.sh | bash -s -- --uninstall
+    ```
+
+    This removes all Brain OS symlinks from `~/.claude/skills/`. Your vault and config file are left untouched.
+  </Step>
+</Steps>

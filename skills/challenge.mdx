@@ -1,0 +1,53 @@
+---
+title: "Challenge"
+description: "Pressure-test your beliefs by finding contradictions, counter-evidence, and hard questions from your vault history."
+---
+
+`/challenge` is an adversarial thinking tool. It takes a topic you believe something about, combs your vault for contradictions and counter-evidence, and then asks you the questions that most directly target the weak spots in your position.
+
+## Usage
+
+```text
+/challenge [topic]
+```
+
+**Example:** `/challenge remote work`
+
+## What it does
+
+`/challenge` runs a five-step pressure test on your current position:
+
+<Steps>
+  <Step title="Find your current position">
+    Claude scans `thinking/`, `daily/`, and relevant context files to establish what you currently believe about the topic — including nuances and qualifications.
+  </Step>
+  <Step title="Find contradictions">
+    Claude looks for places in your vault where your stated beliefs conflict with your actions, your decisions, or other beliefs you hold.
+  </Step>
+  <Step title="Present counter-evidence">
+    Claude surfaces arguments, data points, and perspectives — from your vault and general reasoning — that challenge your current view.
+  </Step>
+  <Step title="Track belief shifts">
+    If you've changed your mind on this topic before, Claude surfaces that evolution. Seeing how your position shifted in the past can reveal whether your current view is robust or temporary.
+  </Step>
+  <Step title="Ask hard questions">
+    Claude closes with 3–5 questions that probe the weakest parts of your position — the assumptions most worth examining.
+  </Step>
+</Steps>
+
+## What to do with the output
+
+The output of a `/challenge` session is a structured critique of your current position. You can:
+
+- Answer the hard questions in a new thinking note
+- Update your position based on the counter-evidence
+- Acknowledge the contradictions and decide whether to resolve them
+- Use the output as a starting point for a `/think` session
+
+<Warning>
+  `/challenge` will surface real contradictions between your stated beliefs and your actual behavior. That can be uncomfortable. That's the point.
+</Warning>
+
+<Tip>
+  `/challenge` is most powerful after you've committed to a position or made a big decision. Use it to stress-test before acting — not to relitigate decisions you've already moved on from.
+</Tip>

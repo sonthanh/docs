@@ -1,0 +1,71 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Brain OS",
+  "theme": "almond",
+  "favicon": "https://media.brand.dev/782c698b-8bee-43da-bd7f-a965ee47feb5.png",
+  "colors": {
+    "primary": "#f8671c",
+    "light": "#f6b68c",
+    "dark": "#f69c68"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/sonthanh/brain-os-plugin"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "vault-setup"
+            ]
+          },
+          {
+            "group": "Knowledge Pipeline",
+            "pages": [
+              "skills/self-learn",
+              "skills/ingest",
+              "skills/audit",
+              "skills/absorb",
+              "skills/chain"
+            ]
+          },
+          {
+            "group": "Daily Operations",
+            "pages": [
+              "skills/today",
+              "skills/close",
+              "skills/handover",
+              "skills/sync"
+            ]
+          },
+          {
+            "group": "Thinking Tools",
+            "pages": [
+              "skills/think",
+              "skills/emerge",
+              "skills/challenge",
+              "skills/connect",
+              "skills/ghost"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration",
+              "dependencies",
+              "eval-system"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

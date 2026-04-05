@@ -1,0 +1,54 @@
+---
+title: "Brain OS"
+description: "25 AI-powered skills for managing your second brain in Obsidian with Claude Code."
+---
+
+Brain OS is a Claude Code plugin that turns your Obsidian vault into an intelligent second brain. Run `/self-learn` to master a book autonomously, `/today` to start your morning with a prioritized plan, or `/think` to enter deep thinking mode — all from your Claude Code session.
+
+## How it works
+
+Brain OS installs 25 skills into Claude Code. Each skill is a slash command — type it in any Claude Code session and the AI takes over, reading your vault, running scripts, and writing results back to Obsidian.
+
+<Steps>
+  <Step title="Install Brain OS">
+    Run the one-line installer to clone the plugin and link all skills to Claude Code.
+    ```bash
+    curl -sSL https://raw.githubusercontent.com/sonthanh/brain-os-plugin/main/skills.sh | bash
+    ```
+  </Step>
+  <Step title="Set your vault path">
+    Edit `~/.brain-os/brain-os.config.md` and point it at your Obsidian vault.
+    ```yaml
+    vault_path: /path/to/your/obsidian/vault
+    ```
+  </Step>
+  <Step title="Run a skill">
+    Open Claude Code and type any Brain OS skill command to get started.
+    ```
+    /today
+    ```
+  </Step>
+</Steps>
+
+## Explore the docs
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Install Brain OS and run your first skill in minutes.
+  </Card>
+  <Card title="Vault Setup" icon="folder-open" href="/vault-setup">
+    Set up the Obsidian vault structure Brain OS expects.
+  </Card>
+  <Card title="Knowledge Pipeline" icon="graduation-cap" href="/skills/self-learn">
+    Extract, validate, and absorb knowledge from books with a 3-phase autonomous pipeline.
+  </Card>
+  <Card title="Daily Operations" icon="sun" href="/skills/today">
+    Morning reviews, end-of-day processing, session handovers, and vault sync.
+  </Card>
+  <Card title="Thinking Tools" icon="lightbulb" href="/skills/think">
+    Deep thinking mode, belief challenging, idea generation, and pattern surfacing.
+  </Card>
+  <Card title="Configuration" icon="gear" href="/configuration">
+    Set your vault path, manage dependencies, and configure the eval system.
+  </Card>
+</CardGroup>

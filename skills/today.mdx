@@ -1,0 +1,50 @@
+---
+title: "Today"
+description: "Run a morning review and generate a prioritized plan for your day."
+---
+
+Type `/today` at the start of your Claude Code session to review your vault context and build a focused daily plan.
+
+## Usage
+
+```bash
+/today
+```
+
+## What it does
+
+<Steps>
+  <Step title="Reads recent context">
+    Loads your last 5 daily notes from `daily/`, plus `context/strategy.md` and `context/goals.md` to understand your current direction.
+  </Step>
+  <Step title="Checks your task inbox">
+    Scans `business/tasks/inbox.md` for pending items that need attention today.
+  </Step>
+  <Step title="Reviews active projects">
+    Looks through `business/projects/` and `personal/projects/` for anything currently in progress.
+  </Step>
+  <Step title="Surfaces follow-ups from recent decisions">
+    Checks `business/intelligence/decisions/` for action items that came out of recent decisions.
+  </Step>
+  <Step title="Generates a prioritized daily plan">
+    Produces a structured plan including:
+    - Your top 3 priorities with reasoning
+    - What's urgent vs. what's important
+    - Suggested time blocks
+    - Anything overdue or at risk
+  </Step>
+  <Step title="Creates or updates today's daily note">
+    Writes the plan to `daily/YYYY-MM-DD.md`, creating the file if it doesn't exist yet.
+  </Step>
+  <Step title="Asks if you want to adjust">
+    Prompts: "Does this plan look right? Want to adjust priorities?" — so you stay in control of your day.
+  </Step>
+</Steps>
+
+## Knowledge pipeline status
+
+`/today` also checks whether any books in your `knowledge/raw/` folder are pending audit and displays the current status of your self-learn pipeline. If there's unprocessed material waiting, it surfaces that alongside your daily plan so nothing slips through.
+
+<Tip>
+  Run `/today` as the very first command in every Claude Code session. It only takes a moment and ensures you start each day with a clear, grounded plan rather than reacting to whatever comes first.
+</Tip>

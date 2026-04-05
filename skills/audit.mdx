@@ -1,0 +1,73 @@
+---
+title: "Audit"
+description: "Independently verify ingested book knowledge against NotebookLM using 50 fresh questions before absorbing into your vault."
+---
+
+`/audit` is a standalone verification layer that runs independently of `/self-learn`. It generates 50 fresh questions and checks your ingested Obsidian notes against NotebookLM to catch errors that the original validation loop may have missed. The result is stored as an audit flag that controls whether `/absorb` can run.
+
+<Note>
+  Audit is completely separate from the Phase 2 validation in `/self-learn`. It's an independent check that runs after ingestion, owned entirely by the audit skill.
+</Note>
+
+## Audit Flags
+
+The audit flag controls how the rest of the pipeline behaves:
+
+| Flag | `/think` | `/absorb` |
+|------|----------|-----------|
+| `true` (verified) | No warning | Runs automatically |
+| `false` (unverified) | Warning shown | Blocked |
+| `manual` (re-review) | Warning shown | Requires your approval |
+
+Flags are stored at `{book_vault}/_validation/audit-flag.json`.
+
+<Warning>
+  `/absorb` is fully blocked when the audit flag is `false`. Run `/audit` to completion before attempting to absorb a book.
+</Warning>
+
+## Commands
+
+Always run the script directly — it handles fuzzy book name matching and execution for you:
+
+```bash
+# Run audit for a book
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/audit/scripts/audit.py {vault}/knowledge/raw <optional-fuzzy-name>
+
+# Check current audit status across all books
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/audit/scripts/audit.py {vault}/knowledge/raw --status
+
+# Manually set an audit flag
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/audit/scripts/audit.py {vault}/knowledge/raw --set-flag <true|false|manual> <optional-fuzzy-name>
+```
+
+## How Audit Runs
+
+<Steps>
+  <Step title="Fuzzy match the book">
+    The script matches your optional book name argument against folders in `knowledge/raw/` so you don't need to type the exact slug.
+  </Step>
+  <Step title="Generate 50 fresh questions">
+    Questions are split across three categories to maximize coverage:
+    - **25 topic-based** — drawn from the book's core concepts
+    - **15 cross-cutting** — themes that span multiple chapters
+    - **10 adversarial** — designed to expose shallow or incorrect understanding
+  </Step>
+  <Step title="Agent answers from Obsidian only">
+    The Knowledge Agent reads only from your Obsidian notes — never from the original book or epub. This tests what your vault actually captured.
+  </Step>
+  <Step title="NotebookLM answers independently">
+    NotebookLM answers the same questions via `notebooklm ask`, providing a ground-truth reference from the full book.
+  </Step>
+  <Step title="LLM-as-judge scores each pair">
+    A judge scores each agent/oracle answer pair on a 0–100 scale. The passing threshold is ≥95.
+  </Step>
+  <Step title="Flag is set based on results">
+    If 100% of questions pass at ≥95, the flag is set to `audited: true`. Any failure sets it to `audited: false` and writes a task to your inbox with a breakdown of what failed.
+  </Step>
+</Steps>
+
+Audit results are saved to:
+
+```
+{book_vault}/_validation/audit-results-{date}.jsonl
+```

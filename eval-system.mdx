@@ -1,0 +1,138 @@
+---
+title: 'Eval System'
+description: 'A two-layer quality system that catches regressions when you edit or customize Brain OS skills.'
+---
+
+Brain OS includes a two-layer eval system to catch regressions when you edit or customize skills. Layer 1 runs automatically on every edit. Layer 2 runs on demand against specific pipeline skills.
+
+<Note>
+  The eval system matters most if you are customizing or extending Brain OS skills. If you use the skills as-is, you don't need to configure anything.
+</Note>
+
+## Layer 1: Smart diff check (automatic)
+
+The smart diff check is a PostToolUse hook that fires every time a `SKILL.md` file is edited. It diffs the new version against the git baseline and warns if critical content was removed — things like section headers, script references, numeric thresholds, and key terms.
+
+**What it checks on every SKILL.md edit:**
+- Word count — warns if content dropped more than 20%, blocks if more than 40%
+- Script references — flags any `.py` file references that disappeared
+- Section headers — flags any `##` headings that were removed
+- Key terms — checks for important concepts like `notebooklm`, `information barriers`, `autoresearch`
+- Numeric thresholds — checks for values like `≥ 95` or `100%` that guard quality requirements
+
+**Exit codes:**
+- `0` — all checks passed
+- `2` — critical removals detected (blocks the edit)
+
+### Setup
+
+Add the following to `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{
+          "type": "command",
+          "command": "bash ~/brain-os-plugin/evals/smart-diff-check.sh"
+        }]
+      }
+    ]
+  }
+}
+```
+
+The hook reads the file path from the tool input automatically — no additional configuration is required.
+
+## Layer 2: Eval checks (on demand)
+
+Pipeline skills include an `evals/evals.json` file following the [Agent Skills](https://agentskills.io/specification) standard. Each eval defines a prompt, expected output, and a list of verifiable assertions that the skill must satisfy.
+
+Run evals for a specific skill:
+
+```
+/eval self-learn
+```
+
+Run evals for all skills that have eval files:
+
+```
+/eval --all
+```
+
+List which skills have evals configured:
+
+```
+/eval
+```
+
+### Output format
+
+```
+self-learn (7 evals)
+  ✓ #1 Phase 2 validation architecture
+  ✓ #2 NotebookLM CLI commands
+  ✗ #3 Question distribution — FAILED: "States 30% blind/cross-cutting questions"
+  ✓ #4 Script references
+  ✓ #5 Quality threshold
+  ✓ #6 Note template format
+  ✓ #7 Post-completion pipeline
+
+6/7 passed. 1 FAILED.
+```
+
+## The evals.json schema
+
+Each skill's eval file lives at `evals/evals.json` inside the skill directory. The schema:
+
+```json
+{
+  "skill_name": "my-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "User task to test",
+      "expected_output": "What success looks like",
+      "expectations": ["Verifiable assertion 1", "Verifiable assertion 2"]
+    }
+  ]
+}
+```
+
+Each eval entry contains:
+
+| Field | Description |
+|---|---|
+| `id` | Unique integer identifier for the eval |
+| `prompt` | The task or question being tested |
+| `expected_output` | A human-readable description of what a passing result looks like |
+| `expectations` | Array of specific, verifiable assertions checked against `SKILL.md` |
+
+## Adding evals to your own skills
+
+Create an `evals/` directory inside your skill directory, then add an `evals.json` file using the schema above. Each eval should test a critical aspect of the skill that would break if accidentally removed.
+
+```
+my-skill/
+├── SKILL.md
+└── evals/
+    └── evals.json
+```
+
+Focus your expectations on content that is both important and specific — section headers, commands, thresholds, or architectural constraints that are easy to accidentally delete during edits.
+
+## Creating and improving skills
+
+<AccordionGroup>
+  <Accordion title="/grill-me — stress-test your skill design">
+    Run `/grill-me` before building a new skill. It stress-tests your design by challenging assumptions and surfacing edge cases before you write any `SKILL.md` content.
+  </Accordion>
+  <Accordion title="/skill-creator — build, evaluate, and iterate">
+    Run `/skill-creator` to create a new skill end-to-end: design, write `SKILL.md`, generate evals, and iterate based on eval results — all in one workflow.
+  </Accordion>
+  <Accordion title="Agent Skills specification">
+    The eval format follows the open [Agent Skills specification](https://agentskills.io/specification). Refer to this if you want to understand the full schema or integrate Brain OS evals with other Agent Skills-compatible tooling.
+  </Accordion>
+</AccordionGroup>

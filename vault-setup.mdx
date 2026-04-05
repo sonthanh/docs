@@ -1,0 +1,51 @@
+---
+title: "Vault Setup"
+description: "Set up the Obsidian vault folder structure that Brain OS skills expect."
+---
+
+Brain OS skills navigate your vault by zone — fixed top-level folders with defined purposes. Every skill knows where to look for context, where to write daily notes, and where raw knowledge lives. Your vault needs to follow this layout for skills to work correctly.
+
+<Note>
+  Brain OS works with any markdown-based note system that follows this folder structure — not just Obsidian. If you already use a plain markdown vault in VS Code or another editor, you can point Brain OS at it directly.
+</Note>
+
+## Folder structure
+
+```
+your-vault/
+├── context/          # Who you are, business, goals, ICP, brand
+├── business/         # Projects, tasks, intelligence, departments
+├── personal/         # Research, people, resources, inbox
+├── thinking/         # Ideas, patterns, reflections, connections
+├── knowledge/        # Books, articles, raw input
+│   ├── raw/          # Unprocessed book extractions
+│   └── books/        # Structured book notes
+├── daily/            # Daily notes, handovers
+└── private/          # Git-ignored confidential data
+```
+
+## Zone reference
+
+| Zone | Purpose |
+|------|---------|
+| `context/` | Your identity layer — who you are, your business, goals, ideal customer profile, and brand. Many skills read this zone first. |
+| `business/` | Active work — projects, tasks, competitive intelligence, and department-level notes. |
+| `personal/` | Personal life — research threads, people you know, resources, and your inbox. |
+| `thinking/` | Your thinking layer — ideas in progress, patterns you've noticed, reflections, and connections between concepts. |
+| `knowledge/` | Structured knowledge from books and articles, split into `raw/` (unprocessed extractions) and `books/` (structured notes). |
+| `daily/` | Daily notes and session handovers created by skills like `today`, `close`, and `handover`. |
+| `private/` | Confidential data that stays off version control. This folder is git-ignored by default. |
+
+## Setting the vault path
+
+After installing Brain OS, open `~/.brain-os/brain-os.config.md` and set `vault_path` to the absolute path of your vault:
+
+```yaml
+vault_path: /path/to/your/obsidian/vault
+```
+
+All 25 skills read this single config file to locate your vault. You only need to set it once.
+
+<Tip>
+  Start by populating your `context/` zone before running any other skills. Add notes about who you are, your goals, your business or projects, and your current strategy. Skills like `today`, `think`, `ghost`, and `work` all read from `context/` to personalize their output — the richer it is, the more useful they become.
+</Tip>

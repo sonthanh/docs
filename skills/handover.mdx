@@ -1,0 +1,108 @@
+---
+title: "Handover"
+description: "Save session state so a future Claude Code session can resume exactly where you left off."
+---
+
+When you have unfinished work at the end of a session, `/handover` captures everything the next session needs to continue seamlessly. When you're ready to resume, `/pickup` loads that context and picks up from where you stopped.
+
+## Usage
+
+```bash
+/handover    # Save session state before ending
+/pickup      # Resume from handover in a new session
+```
+
+## What /handover does
+
+<Steps>
+  <Step title="Scans the current session">
+    Reviews everything discussed, decided, built, and left pending — across the entire session.
+  </Step>
+  <Step title="Creates a handover file">
+    Writes a structured handover document to `daily/handovers/YYYY-MM-DD-topic.md`.
+  </Step>
+  <Step title="Writes a task to your inbox">
+    Adds a backlog entry to `business/tasks/inbox.md` so `/pickup` can find it automatically:
+
+    ```markdown
+    - [ ] [Handover] Topic description → [[daily/handovers/YYYY-MM-DD-topic]] (status: ready-to-continue)
+    ```
+  </Step>
+  <Step title="Updates MEMORY.md">
+    Adds a pointer to the new handover so it's part of your vault's persistent memory.
+  </Step>
+</Steps>
+
+## Handover document structure
+
+Each handover file follows this template:
+
+```markdown
+---
+title: "Handover: [topic]"
+created: YYYY-MM-DDTHH:MM:SS
+status: in-progress | blocked | ready-to-continue
+tags: [handover, topic]
+---
+
+# Handover: [Topic]
+
+## TL;DR
+[2-3 sentences: what was this session about, where did we stop, what's next]
+
+## Session Summary
+[What was accomplished — be specific with file paths and numbers]
+
+## Decisions Made (SETTLED — do NOT re-ask)
+| Decision | Answer | Why |
+|----------|--------|-----|
+
+## Current State
+- Files created: [full paths]
+- Files modified: [full paths]
+- Tools installed: [with paths]
+- Git status: [committed? pushed?]
+
+## What's Next
+1. [Step 1 — exactly what to do, which files to touch]
+2. [Step 2]
+3. [Step 3]
+
+## Blockers / Open Questions
+- [anything needing user input]
+
+## Key File Locations
+| What | Path |
+|------|------|
+
+## Commands to Verify State
+\`\`\`bash
+# Run these first to confirm nothing changed since handover
+[commands]
+\`\`\`
+
+## Context the Next Session Needs
+[User preferences, constraints, gotchas not captured elsewhere]
+```
+
+## What /pickup does
+
+When you start a new session and type `/pickup`, it scans `business/tasks/inbox.md` for unchecked `[Handover]` tasks. If it finds one, it loads the full handover document, runs the verification commands, presents a brief summary of where things stand, and immediately starts executing the next step — no setup needed on your end.
+
+If multiple handovers are pending, it shows you the list and asks which one to resume. Once all steps are complete, it marks the inbox task done:
+
+```markdown
+- [x] [Handover] Topic description → [[daily/handovers/YYYY-MM-DD-topic]] ✅ YYYY-MM-DD
+```
+
+If new unfinished work emerged during the pickup session, it runs `/handover` again to keep the chain going.
+
+## Rules for effective handovers
+
+- **Use absolute file paths only** — the next session has no memory of "that file we were working on." Every reference must be a full path.
+- **Decisions marked SETTLED will not be re-asked** — if something was confirmed and recorded in the "Decisions Made" table, the next session treats it as a requirement and moves on.
+- **Always write to backlog** — a handover file that isn't linked from `inbox.md` won't be found by `/pickup`. The vault is the task queue.
+
+<Tip>
+  The handover + pickup loop is especially powerful for long, multi-session projects. Instead of spending 10 minutes re-establishing context at the start of each session, you drop straight into the work.
+</Tip>
